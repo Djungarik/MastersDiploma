@@ -1,0 +1,235 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --color-parchment: #f9edd8;
+  --color-ink: #1f1d1a;
+  --color-gold: #d4af37;
+  --color-blood: #a13d3d;
+  --color-mystic: #5c4ca3;
+  --color-forest: #3d7a50;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: 'Crimson Text', serif;
+  background: linear-gradient(
+    135deg,
+    #0d0c0a 0%,
+    #1a1815 25%,
+    #1f1d1a 50%,
+    #1a1815 75%,
+    #0d0c0a 100%
+  );
+  color: #f9edd8;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* Parchment texture overlay */
+body::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+  opacity: 0.03;
+  pointer-events: none;
+  z-index: -1;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #1f1d1a;
+}
+
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, #d4af37 0%, #8a6f23 100%);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(180deg, #e8c347 0%, #a18529 100%);
+}
+
+/* Glowing orb effect for mood indicator */
+.mood-orb {
+  position: relative;
+  border-radius: 50%;
+  transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.mood-orb::before {
+  content: '';
+  position: absolute;
+  inset: -4px;
+  border-radius: 50%;
+  background: inherit;
+  filter: blur(20px);
+  opacity: 0.6;
+  z-index: -1;
+}
+
+.mood-orb::after {
+  content: '';
+  position: absolute;
+  inset: -8px;
+  border-radius: 50%;
+  background: inherit;
+  filter: blur(40px);
+  opacity: 0.3;
+  z-index: -2;
+}
+
+/* Mood-specific colors */
+.mood-calm {
+  background: radial-gradient(circle, #5a9a6b 0%, #2d5a3b 100%);
+  box-shadow: 0 0 60px rgba(90, 154, 107, 0.5);
+}
+
+.mood-tense {
+  background: radial-gradient(circle, #d4af37 0%, #8a6f23 100%);
+  box-shadow: 0 0 60px rgba(212, 175, 55, 0.5);
+}
+
+.mood-epic {
+  background: radial-gradient(circle, #c45b5b 0%, #7e2f2f 100%);
+  box-shadow: 0 0 60px rgba(196, 91, 91, 0.5);
+}
+
+.mood-spooky {
+  background: radial-gradient(circle, #7b68c9 0%, #44387a 100%);
+  box-shadow: 0 0 60px rgba(123, 104, 201, 0.5);
+}
+
+.mood-mystery {
+  background: radial-gradient(circle, #4a6fa5 0%, #2c4163 100%);
+  box-shadow: 0 0 60px rgba(74, 111, 165, 0.5);
+}
+
+/* Audio waveform animation */
+@keyframes waveform {
+  0%, 100% { height: 4px; }
+  50% { height: 24px; }
+}
+
+.waveform-bar {
+  animation: waveform 1s ease-in-out infinite;
+}
+
+.waveform-bar:nth-child(1) { animation-delay: 0s; }
+.waveform-bar:nth-child(2) { animation-delay: 0.1s; }
+.waveform-bar:nth-child(3) { animation-delay: 0.2s; }
+.waveform-bar:nth-child(4) { animation-delay: 0.3s; }
+.waveform-bar:nth-child(5) { animation-delay: 0.4s; }
+.waveform-bar:nth-child(6) { animation-delay: 0.3s; }
+.waveform-bar:nth-child(7) { animation-delay: 0.2s; }
+.waveform-bar:nth-child(8) { animation-delay: 0.1s; }
+.waveform-bar:nth-child(9) { animation-delay: 0s; }
+
+/* Rune border decorations */
+.rune-border {
+  position: relative;
+}
+
+.rune-border::before,
+.rune-border::after {
+  content: '✧';
+  position: absolute;
+  font-size: 1.5rem;
+  color: var(--color-gold);
+  opacity: 0.7;
+}
+
+.rune-border::before {
+  top: -1rem;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.rune-border::after {
+  bottom: -1rem;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+/* Glass morphism card */
+.glass-card {
+  background: rgba(31, 29, 26, 0.7);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(212, 175, 55, 0.2);
+  border-radius: 12px;
+}
+
+/* Animated gradient border */
+@keyframes border-dance {
+  0%, 100% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+}
+
+.animated-border {
+  position: relative;
+}
+
+.animated-border::before {
+  content: '';
+  position: absolute;
+  inset: -2px;
+  border-radius: 14px;
+  background: linear-gradient(
+    90deg,
+    #d4af37,
+    #7b68c9,
+    #c45b5b,
+    #5a9a6b,
+    #d4af37
+  );
+  background-size: 300% 100%;
+  animation: border-dance 8s linear infinite;
+  z-index: -1;
+  opacity: 0.6;
+}
+
+/* Fade transitions */
+.fade-enter {
+  opacity: 0;
+  transform: translateY(10px);
+}
+
+.fade-enter-active {
+  opacity: 1;
+  transform: translateY(0);
+  transition: all 0.4s ease-out;
+}
+
+.fade-exit {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.fade-exit-active {
+  opacity: 0;
+  transform: translateY(-10px);
+  transition: all 0.4s ease-in;
+}
+
