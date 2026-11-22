@@ -1,0 +1,29 @@
+UA Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/157.0.0.0 Safari/537.36
+envelope blocks 7960 gain samples 9193
+
+== volume steps
+set 1.00: gain 0.700 -> 1.000, reached target after 109 ms, largest gain change between 5 ms samples 0.064, output RMS 0.1425
+set 0.70: gain 1.000 -> 0.700, reached target after 99 ms, largest gain change between 5 ms samples 0.064, output RMS 0.0931
+set 0.40: gain 0.700 -> 0.400, reached target after 101 ms, largest gain change between 5 ms samples 0.032, output RMS 0.0625
+set 0.10: gain 0.400 -> 0.100, reached target after 109 ms, largest gain change between 5 ms samples 0.064, output RMS 0.0169
+set 0.00: gain 0.100 -> 0.000, reached target after 101 ms, largest gain change between 5 ms samples 0.016, output RMS 0.0000
+set 0.70: gain 0.000 -> 0.700, reached target after 120 ms, largest gain change between 5 ms samples 0.075, output RMS 0.0886
+set 0.50: gain 0.700 -> 0.500, reached target after 109 ms, largest gain change between 5 ms samples 0.043, output RMS 0.0662
+set 0.80: gain 0.500 -> 0.757, reached target after 101 ms, largest gain change between 5 ms samples 0.032, output RMS 0.0551
+   set 1.00 -> output 1.000 of the 100 % level (0.0 dB)
+   set 0.70 -> output 0.653 of the 100 % level (-3.7 dB)
+   set 0.40 -> output 0.439 of the 100 % level (-7.2 dB)
+   set 0.10 -> output 0.119 of the 100 % level (-18.5 dB)
+   set 0.00 -> output 0.000 of the 100 % level (-inf dB)
+   set 0.70 -> output 0.622 of the 100 % level (-4.1 dB)
+   set 0.50 -> output 0.465 of the 100 % level (-6.7 dB)
+   set 0.80 -> output 0.387 of the 100 % level (-8.2 dB)
+
+== transitions (master gain trace)
+crossfade -> tense                 gain 0.700 -> 0.690 within 15 ms (largest 5 ms change 0.010 at +2952 ms) | gain 0 after 1.52 s | gain 0 held 0 ms | fade-in 1.49 s | output RMS 0.1058 -> 0.0812
+crossfade -> epic                  gain 0.700 -> 0.686 within 15 ms (largest 5 ms change 0.010 at +451 ms) | gain 0 after 1.51 s | gain 0 held 0 ms | fade-in 1.50 s | output RMS 0.0634 -> 0.0739
+crossfade -> spooky                gain 0.700 -> 0.695 within 15 ms (largest 5 ms change 0.010 at +440 ms) | gain 0 after 1.52 s | gain 0 held 19 ms | fade-in 1.49 s | output RMS 0.0733 -> 0.0566
+crossfade -> mystery               gain 0.700 -> 0.686 within 15 ms (largest 5 ms change 0.010 at +451 ms) | gain 0 after 1.50 s | gain 0 held 8 ms | fade-in 1.51 s | output RMS 0.0303 -> 0.0586
+crossfade -> calm                  gain 0.700 -> 0.691 within 15 ms (largest 5 ms change 0.010 at +440 ms) | gain 0 after 1.50 s | gain 0 held 11 ms | fade-in 1.50 s | output RMS 0.0579 -> 0.1216
+crossfade -> epic (after volume)   gain 0.800 -> 0.790 within 15 ms (largest 5 ms change 0.011 at +2920 ms) | gain 0 after 1.50 s | gain 0 held 5 ms | fade-in 1.50 s | output RMS 0.0662 -> 0.0837
+manual play mystery while playing  gain 0.800 -> 0.800 within 15 ms (largest 5 ms change 0.156 at +120 ms) | gain 0 after 0.23 s | gain 0 held 8 ms | fade-in 1.99 s | output RMS 0.0836 -> 0.0698

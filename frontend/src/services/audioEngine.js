@@ -43,6 +43,20 @@ class AudioEngine {
   }
 
   /**
+   * Smoothly move the master gain from its current value to `value` over `seconds`.
+   * The ramp is anchored at the current value: without setValueAtTime() a linear ramp
+   * starts from the time of the previous automation event, which makes the gain jump.
+   */
+  rampTo(value, seconds) {
+    const gain = this.masterGain.gain
+    const now = this.audioContext.currentTime
+    const current = gain.value
+    gain.cancelScheduledValues(now)
+    gain.setValueAtTime(current, now)
+    gain.linearRampToValueAtTime(value, now + seconds)
+  }
+
+  /**
    * Stop all playing sounds
    */
   stopAll() {
@@ -54,6 +68,7 @@ class AudioEngine {
     })
     this.nodes = []
     if (this.masterGain) {
+      this.masterGain.gain.cancelScheduledValues(0)
       this.masterGain.gain.value = 0
     }
     this.isPlaying = false
@@ -299,17 +314,19 @@ class AudioEngine {
   async playImmediate(url, mood = 'calm') {
     await this.init()
     await this.resume()
-    
+
+    // Short fade-out instead of a hard cut when something is already playing
+    if (this.isPlaying) {
+      this.rampTo(0, 0.15)
+      await new Promise(resolve => setTimeout(resolve, 150))
+    }
+
     this.stopAll()
     this.currentMood = mood
     this.generateAmbient(mood)
-    
+
     // Fade in
-    this.masterGain.gain.setValueAtTime(0, this.audioContext.currentTime)
-    this.masterGain.gain.linearRampToValueAtTime(
-      this.masterVolume,
-      this.audioContext.currentTime + 2
-    )
+    this.rampTo(this.masterVolume, 2)
     
     this.isPlaying = true
     console.log('🎵 Playing ambient soundscape for mood:', mood)
@@ -318,37 +335,74 @@ class AudioEngine {
   /**
    * Crossfade to new mood
    */
-  async crossfadeTo(url, durationSeconds = 3, mood = 'calm') {
+  /**
+   * Wait until the audio clock reaches `audioTime`. The page timer can drift from the
+   * audio clock under load, so the audio clock is checked again after every timer;
+   * a stalled audio clock is not waited for longer than `maxWaitMs`.
+   */
+  waitForAudioTime(audioTime, maxWaitMs) {
+    const deadline = Date.now() + maxWaitMs
+    return new Promise((resolve) => {
+      const check = () => {
+        const left = audioTime - this.audioContext.currentTime
+        if (left > 0.005 && Date.now() < deadline) {
+          setTimeout(check, left * 1000 + 5)
+          return
+        }
+        resolve()
+      }
+      check()
+    })
+  }
+
+  /**
+   * Transition to another mood: the current ambient fades out to zero, then the
+   * ambient of the new mood is started and fades in (the two never sound together).
+   * Returns a promise that resolves when the fade-in has finished. Transitions are
+   * serialised: a call made while a transition is running starts after it ends.
+   */
+  crossfadeTo(url, durationSeconds = 3, mood = 'calm') {
+    const run = () => this.runTransition(durationSeconds, mood)
+    this.transition = (this.transition || Promise.resolve()).then(run, run)
+    return this.transition
+  }
+
+  async runTransition(durationSeconds, mood) {
     if (mood === this.currentMood) {
       console.log('🎵 Same mood, no change needed')
       return
     }
-    
+
     await this.init()
     await this.resume()
-    
-    // Fade out current
-    this.masterGain.gain.linearRampToValueAtTime(
-      0,
-      this.audioContext.currentTime + durationSeconds / 2
-    )
-    
-    // Switch to new mood after fade out
-    setTimeout(() => {
+
+    this.transitioning = true
+    const half = durationSeconds / 2
+    try {
+      // Fade out the current ambient (anchored at the current gain, see rampTo)
+      this.rampTo(0, half)
+      await this.waitForAudioTime(this.audioContext.currentTime + half, half * 1000 + 1000)
+
+      // Switch generators only after the fade-out has really ended
       this.stopAll()
       this.currentMood = mood
       this.generateAmbient(mood)
-      
-      // Fade in new
-      this.masterGain.gain.setValueAtTime(0, this.audioContext.currentTime)
-      this.masterGain.gain.linearRampToValueAtTime(
-        this.masterVolume,
-        this.audioContext.currentTime + durationSeconds / 2
-      )
-      
       this.isPlaying = true
       console.log('🎵 Crossfaded to mood:', mood)
-    }, (durationSeconds / 2) * 1000)
+
+      // Fade in the new ambient
+      this.rampTo(this.masterVolume, half)
+      await this.waitForAudioTime(this.audioContext.currentTime + half, half * 1000 + 1000)
+    } finally {
+      this.transitioning = false
+    }
+  }
+
+  /**
+   * True while a transition (fade-out, switch, fade-in) is running
+   */
+  isTransitioning() {
+    return Boolean(this.transitioning)
   }
 
   /**
@@ -367,10 +421,7 @@ class AudioEngine {
   setVolume(value) {
     this.masterVolume = Math.max(0, Math.min(1, value))
     if (this.masterGain && this.isPlaying) {
-      this.masterGain.gain.linearRampToValueAtTime(
-        this.masterVolume,
-        this.audioContext.currentTime + 0.1
-      )
+      this.rampTo(this.masterVolume, 0.1)
     }
   }
 

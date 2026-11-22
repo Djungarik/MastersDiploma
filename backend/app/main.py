@@ -21,7 +21,7 @@ from app.routers import mood, transcribe, music, auth
 async def lifespan(app: FastAPI):
     """Startup and shutdown events"""
     settings = get_settings()
-    print(f"🎵 {settings.app_name} starting...")
+    print(f"[Adaptive OST] {settings.app_name} starting...")
     print(f"   Debug mode: {settings.debug}")
     print(f"   AI Provider: {settings.ai_provider}")
     
@@ -29,7 +29,7 @@ async def lifespan(app: FastAPI):
     await init_db()
     
     yield
-    print(f"🎵 {settings.app_name} shutting down...")
+    print(f"[Adaptive OST] {settings.app_name} shutting down...")
 
 
 app = FastAPI(

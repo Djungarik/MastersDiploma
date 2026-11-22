@@ -1,0 +1,163 @@
+{
+ "ua": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/157.0.0.0 Safari/537.36",
+ "volume": [
+  {
+   "set": 1.0,
+   "gain_before": 0.7,
+   "gain_after": 1,
+   "settle_ms": 51,
+   "max_jump": 0.292,
+   "out_rms": 0.14101,
+   "out_ratio": 1.0
+  },
+  {
+   "set": 0.7,
+   "gain_before": 1,
+   "gain_after": 0.7,
+   "settle_ms": 59,
+   "max_jump": 0.2908,
+   "out_rms": 0.0873,
+   "out_ratio": 0.619
+  },
+  {
+   "set": 0.4,
+   "gain_before": 0.7,
+   "gain_after": 0.4,
+   "settle_ms": 51,
+   "max_jump": 0.2911,
+   "out_rms": 0.06204,
+   "out_ratio": 0.44
+  },
+  {
+   "set": 0.1,
+   "gain_before": 0.4,
+   "gain_after": 0.1,
+   "settle_ms": 59,
+   "max_jump": 0.2909,
+   "out_rms": 0.01768,
+   "out_ratio": 0.125
+  },
+  {
+   "set": 0.0,
+   "gain_before": 0.1,
+   "gain_after": 0,
+   "settle_ms": 11,
+   "max_jump": 0.097,
+   "out_rms": 0.0,
+   "out_ratio": 0.0
+  },
+  {
+   "set": 0.7,
+   "gain_before": 0,
+   "gain_after": 0.7,
+   "settle_ms": 91,
+   "max_jump": 0.6787,
+   "out_rms": 0.08655,
+   "out_ratio": 0.614
+  },
+  {
+   "set": 0.5,
+   "gain_before": 0.7,
+   "gain_after": 0.5,
+   "settle_ms": 11,
+   "max_jump": 0.1965,
+   "out_rms": 0.06639,
+   "out_ratio": 0.471
+  },
+  {
+   "set": 0.8,
+   "gain_before": 0.5,
+   "gain_after": 0.6282,
+   "settle_ms": 51,
+   "max_jump": 0.2933,
+   "out_rms": 0.03916,
+   "out_ratio": 0.278
+  }
+ ],
+ "transitions": [
+  {
+   "label": "crossfade -> tense",
+   "gain_before": 0.7,
+   "gain_after_15ms": 0.1397,
+   "max_jump": 0.5588,
+   "max_jump_at_ms": 5,
+   "fade_out_s": 1.491,
+   "zero_ms": 19,
+   "fade_in_s": 1.501,
+   "rms_before": 0.10426,
+   "rms_after": 0.08097
+  },
+  {
+   "label": "crossfade -> epic",
+   "gain_before": 0.7,
+   "gain_after_15ms": 0.1602,
+   "max_jump": 0.5398,
+   "max_jump_at_ms": 19,
+   "fade_out_s": 1.509,
+   "zero_ms": 21,
+   "fade_in_s": 1.488,
+   "rms_before": 0.06378,
+   "rms_after": 0.06382
+  },
+  {
+   "label": "crossfade -> spooky",
+   "gain_before": 0.7,
+   "gain_after_15ms": 0.1604,
+   "max_jump": 0.5396,
+   "max_jump_at_ms": 21,
+   "fade_out_s": 1.512,
+   "zero_ms": 19,
+   "fade_in_s": 1.491,
+   "rms_before": 0.06233,
+   "rms_after": 0.05683
+  },
+  {
+   "label": "crossfade -> mystery",
+   "gain_before": 0.7,
+   "gain_after_15ms": 0.1602,
+   "max_jump": 0.5389,
+   "max_jump_at_ms": 11,
+   "fade_out_s": 1.499,
+   "zero_ms": 32,
+   "fade_in_s": 1.488,
+   "rms_before": 0.03457,
+   "rms_after": 0.05877
+  },
+  {
+   "label": "crossfade -> calm",
+   "gain_before": 0.7,
+   "gain_after_15ms": 0.16,
+   "max_jump": 0.5388,
+   "max_jump_at_ms": 8,
+   "fade_out_s": 1.499,
+   "zero_ms": 0,
+   "fade_in_s": 1.501,
+   "rms_before": 0.0576,
+   "rms_after": 0.1215
+  },
+  {
+   "label": "crossfade -> epic (after volume)",
+   "gain_before": 0.8,
+   "gain_after_15ms": 0.6551,
+   "max_jump": 0.1449,
+   "max_jump_at_ms": 19,
+   "fade_out_s": 1.509,
+   "zero_ms": 0,
+   "fade_in_s": 1.499,
+   "rms_before": 0.07344,
+   "rms_after": 0.07774
+  },
+  {
+   "label": "manual play mystery while playing",
+   "gain_before": 0.8,
+   "gain_after_15ms": 0.8,
+   "max_jump": 0.7925,
+   "max_jump_at_ms": 117,
+   "fade_out_s": null,
+   "zero_ms": 0,
+   "fade_in_s": null,
+   "rms_before": 0.07799,
+   "rms_after": 0.07127
+  }
+ ]
+}

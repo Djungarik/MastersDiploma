@@ -1,0 +1,37 @@
+{
+ "password_mismatch": "Passwords do not match",
+ "short_password": "Password must be at least 6 characters",
+ "tc51_registered": true,
+ "tc51_token": true,
+ "logout_token_removed": true,
+ "duplicate_email": "Email already registered",
+ "wrong_password": "Invalid email or password",
+ "tc52_login": true,
+ "tc52_user_shown": true,
+ "auth_http": [
+  "POST /api/auth/register 201",
+  "POST /api/auth/logout 500",
+  "POST /api/auth/register 400",
+  "POST /api/auth/login 401",
+  "POST /api/auth/login 200"
+ ],
+ "mic_denied_toast": "Microphone access denied: Permission denied",
+ "mic_denied_status": true,
+ "mic_denied_button": true,
+ "mic_denied_toast_gone": true,
+ "tc55_label_after_manual": "Epic",
+ "tc55_playing": true,
+ "tc55_console": "🎵 Playing ambient soundscape for mood: epic",
+ "s9_label_after_manual": "Ominous",
+ "s9_manual_at_s": 13.7,
+ "s9_label_after_next_analysis": "Tranquil",
+ "s9_analysis": [
+  {
+   "at_s": 28.8,
+   "text": "{\"mood\":\"calm\",\"intensity\":2,\"environment\":\"tavern\",\"reasoning\":\"The scene depicts a peaceful rest "
+  }
+ ],
+ "stop_status_idle": true,
+ "stop_still_playing": true,
+ "stop_all_no_track": true
+}

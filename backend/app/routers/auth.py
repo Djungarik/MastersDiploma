@@ -78,11 +78,11 @@ async def register(data: UserRegister) -> TokenResponse:
     
     # Generate access token
     access_token = create_access_token(
-        data={"sub": user["id"]},
+        data={"sub": str(user["id"])},
         expires_delta=timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
     )
     
-    print(f"✅ New user registered: {user['email']}")
+    print(f"New user registered: {user['email']}")
     
     return TokenResponse(
         access_token=access_token,
@@ -103,11 +103,11 @@ async def login(data: UserLogin) -> TokenResponse:
     """
     # Find user by email
     user = await get_user_by_email(data.email)
-    print(f"🔍 Login attempt for: {data.email}")
+    print(f"Login attempt for: {data.email}")
     print(f"   User found: {user is not None}")
     
     if not user:
-        print(f"   ❌ User not found in database")
+        print("   User not found in database")
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Invalid email or password"
@@ -121,11 +121,11 @@ async def login(data: UserLogin) -> TokenResponse:
         password_valid = verify_password(data.password, user["hashed_password"])
         print(f"   Password valid: {password_valid}")
     except Exception as e:
-        print(f"   ❌ Password verification error: {e}")
+        print(f"   Password verification error: {e}")
         password_valid = False
     
     if not password_valid:
-        print(f"   ❌ Password mismatch")
+        print("   Password mismatch")
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Invalid email or password"
@@ -140,11 +140,11 @@ async def login(data: UserLogin) -> TokenResponse:
     
     # Generate access token
     access_token = create_access_token(
-        data={"sub": user["id"]},
+        data={"sub": str(user["id"])},
         expires_delta=timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
     )
     
-    print(f"✅ User logged in: {user['email']}")
+    print(f"User logged in: {user['email']}")
     
     return TokenResponse(
         access_token=access_token,
@@ -178,5 +178,5 @@ async def logout(user: dict = Depends(require_auth)) -> MessageResponse:
     Note: With JWT, logout is handled client-side by removing the token.
     This endpoint is for logging/tracking purposes.
     """
-    print(f"👋 User logged out: {user['email']}")
+    print(f"User logged out: {user['email']}")
     return MessageResponse(message="Successfully logged out")

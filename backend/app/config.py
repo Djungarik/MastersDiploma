@@ -19,7 +19,8 @@ class Settings(BaseSettings):
     
     # Groq API (free!)
     groq_api_key: str = ""
-    groq_model: str = "llama-3.1-8b-instant"  # Fast and free
+    # llama-3.1-8b-instant (used during development) was retired by Groq in 11.2026
+    groq_model: str = "qwen/qwen3.8-27b"
     
     # Mubert API for music generation
     mubert_api_key: str = ""

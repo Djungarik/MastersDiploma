@@ -42,7 +42,7 @@ async def init_db():
         """)
         
         await db.commit()
-        print("✅ Database initialized")
+        print("Database initialized")
 
 
 @asynccontextmanager

@@ -1,36 +1,43 @@
 import { useCallback, useRef, useEffect } from 'react'
 import useAppStore from '../store/useAppStore'
 import { useAudioCapture } from './useAudioCapture'
-import { transcribeAudio, isWhisperReady } from '../services/whisperService'
-import { analyzeMood, shouldChangeMuaic } from '../services/moodAnalyzer'
+import { transcribeAudio } from '../services/whisperService'
+import { analyzeMood, shouldChangeMusic } from '../services/moodAnalyzer'
 import { audioEngine } from '../services/audioEngine'
 import { fetchMusicTrack, getBridgeSound } from '../services/musicService'
+import { createLoopController } from '../services/loopController'
+
+// Delay before the first analysis, so that some audio is collected
+const FIRST_ITERATION_DELAY_MS = 5000
+
+// Typical Whisper outputs for silence or background noise
+const SILENCE_ARTIFACTS = ['you', 'the', 'thank you', 'thanks for watching', '[music]', '(music)', 'bye']
 
 /**
- * The Agentic Loop - Core innovation of Adaptive OST
- * 
- * This hook orchestrates the continuous cycle of:
+ * The Agentic Loop - core of Adaptive OST
+ *
+ * Orchestrates the continuous cycle of:
  * 1. Capture audio from GM
  * 2. Transcribe locally with Whisper
- * 3. Analyze mood with GPT-4o mini
+ * 3. Analyze mood on the backend (LLM)
  * 4. Trigger music changes when mood shifts
- * 
- * The loop runs automatically every N seconds while listening is active.
+ *
+ * Scheduling is delegated to loopController: iterations run strictly one
+ * after another, and results that arrive after the session was stopped are
+ * ignored (see the isStale() checks after every await).
  */
 export function useAgenticLoop() {
-  const loopIntervalRef = useRef(null)
-  const firstRunTimeoutRef = useRef(null)
   const lastMoodRef = useRef(null)
   const lastIntensityRef = useRef(5)
   const isTransitioningRef = useRef(false)
+  const controllerRef = useRef(null)
+  const iterationRef = useRef(null)
 
   const {
     isListening,
     whisperReady,
     analysisInterval,
     currentMood,
-    intensity,
-    environment,
     isPlaying,
     setTranscribing,
     setTranscribedText,
@@ -44,12 +51,17 @@ export function useAgenticLoop() {
 
   const { getAudioChunk } = useAudioCapture()
 
+  // Latest values for the long-lived loop: read through a ref so that the
+  // loop never works with a stale closure and is not restarted on re-render
+  const latestRef = useRef({ analysisInterval, currentMood })
+  latestRef.current = { analysisInterval, currentMood }
+
   /**
    * Handle music transition with crossfade
    */
-  const transitionToNewTrack = useCallback(async (mood, intensity, environment) => {
+  const transitionToNewTrack = useCallback(async (mood, intensity, environment, isStale = () => false) => {
     if (isTransitioningRef.current) {
-      console.log('⏳ Transition already in progress, skipping')
+      console.log('Transition already in progress, skipping')
       return
     }
 
@@ -67,12 +79,8 @@ export function useAgenticLoop() {
         }
       }
 
-      // Fetch new track
-      console.log(`🎵 Fetching ${mood} track for ${environment}...`)
       const track = await fetchMusicTrack(mood, intensity, environment)
-      console.log(`🎵 Got track from ${track.source}:`, track.url)
 
-      // Stop bridge and crossfade to new track
       if (bridgeSound) {
         try {
           await audioEngine.stopBridge(1)
@@ -80,109 +88,101 @@ export function useAgenticLoop() {
           // Ignore bridge stop errors
         }
       }
-      
-      if (isPlaying) {
+
+      // The session was stopped while the track was being fetched
+      if (isStale()) {
+        console.log('Session stopped, transition cancelled')
+        return
+      }
+
+      if (audioEngine.getIsPlaying()) {
+        console.log(`[loop] crossfade start -> ${mood}`)
         await audioEngine.crossfadeTo(track.url, 3, mood)
       } else {
+        console.log(`[loop] playback start -> ${mood}`)
         await audioEngine.playImmediate(track.url, mood)
         setPlaying(true)
       }
 
       setCurrentTrack(track.url)
-      completeTransition()
-
     } catch (error) {
       console.error('Music transition failed:', error)
       setError(`Music error: ${error.message}`)
-      completeTransition()
     } finally {
+      completeTransition()
       isTransitioningRef.current = false
     }
-  }, [isPlaying, setPlaying, setCurrentTrack, startTransition, completeTransition, setError])
+  }, [setPlaying, setCurrentTrack, startTransition, completeTransition, setError])
 
   /**
-   * Single iteration of the agentic loop
+   * Single iteration of the agentic loop.
+   * isStale() becomes true when the session that started it has been stopped.
    */
-  const runLoopIteration = useCallback(async () => {
-    if (!isListening || !whisperReady) return
-
+  const runLoopIteration = useCallback(async ({ isStale = () => false } = {}) => {
     try {
-      // Phase A: Get audio chunk
-      console.log('🎤 Capturing audio chunk...')
+      // Phase A: get audio collected since the previous iteration
+      console.log('[loop] iteration start')
       const audioBlob = await getAudioChunk()
-      
+      if (isStale()) return
+
       if (!audioBlob || audioBlob.size < 100) {
-        console.log('⏭️ Not enough audio captured (size: ' + (audioBlob?.size || 0) + ' bytes), skipping iteration')
+        console.log('Not enough audio captured (size: ' + (audioBlob?.size || 0) + ' bytes), skipping iteration')
         return
       }
-      
-      console.log(`✅ Got audio chunk: ${audioBlob.size} bytes`)
 
-      // Phase B: Transcribe (local first, then server fallback)
-      console.log('📝 Transcribing...')
+      // Phase B: transcribe (local first, then server fallback)
+      console.log('[loop] transcription start')
       setTranscribing(true)
-      
+
       let text = null
-      let transcriptionMethod = 'none'
-      
-      // Try local Whisper first
+
       try {
         text = await transcribeAudio(audioBlob)
-        transcriptionMethod = 'local'
-        console.log('✅ Local transcription succeeded')
       } catch (transcribeError) {
-        console.warn('⚠️ Local transcription failed:', transcribeError.message)
-        
-        // Try server fallback
+        console.warn('Local transcription failed:', transcribeError.message)
+
         try {
-          console.log('🔄 Trying server transcription...')
           const formData = new FormData()
           formData.append('audio', audioBlob, 'recording.webm')
-          const response = await fetch('/api/transcribe', {
-            method: 'POST',
-            body: formData,
-          })
+          const response = await fetch('/api/transcribe', { method: 'POST', body: formData })
           if (response.ok) {
             const data = await response.json()
             text = data.text
-            transcriptionMethod = 'server'
-            console.log('✅ Server transcription succeeded')
           } else {
-            console.warn('⚠️ Server returned error:', response.status, response.statusText)
+            console.warn('Server transcription returned error:', response.status, response.statusText)
           }
         } catch (serverError) {
-          console.warn('⚠️ Server transcription failed:', serverError.message)
+          console.warn('Server transcription failed:', serverError.message)
         }
       }
-      
+
       setTranscribing(false)
-      
-      // Check if we got any transcription
+      if (isStale()) return
+      console.log('[loop] transcription end')
+
       if (!text || text.trim().length === 0) {
-        console.log('⏭️ No speech detected in audio')
+        console.log('No speech detected in audio')
         return
       }
-      
+
       // Filter out common Whisper artifacts (silence transcriptions)
       const cleanedText = text.trim()
-      const artifacts = ['you', 'the', 'thank you', 'thanks for watching', '[music]', '(music)', 'bye']
-      if (cleanedText.length < 10 || artifacts.includes(cleanedText.toLowerCase())) {
-        console.log('⏭️ Filtered out noise/artifact:', cleanedText)
+      if (cleanedText.length < 10 || SILENCE_ARTIFACTS.includes(cleanedText.toLowerCase())) {
+        console.log('Filtered out noise/artifact:', cleanedText)
         return
       }
 
       setTranscribedText(text)
-      console.log('📝 Transcribed:', text.substring(0, 100) + '...')
+      console.log('[loop] transcribed text:', text)
 
-      // Phase C: Analyze mood with backend
-      console.log('🧠 Analyzing mood...')
-      let analysis
-      
+      // Phase C: analyze mood with backend
+      console.log('[loop] analysis start')
+      let analysis = null
+
       try {
         analysis = await analyzeMood(text)
       } catch (apiError) {
-        console.log('API analysis failed, trying mock endpoint:', apiError.message)
-        // Try mock endpoint for testing
+        console.log('API analysis failed, trying keyword fallback:', apiError.message)
         try {
           const mockResponse = await fetch('/api/analyze-mood/mock', {
             method: 'POST',
@@ -193,109 +193,84 @@ export function useAgenticLoop() {
             analysis = await mockResponse.json()
           }
         } catch (mockError) {
-          console.error('Mock analysis also failed:', mockError)
+          console.error('Keyword fallback also failed:', mockError)
         }
       }
 
-      if (!analysis) {
-        console.log('⏭️ Could not analyze mood')
+      // A late response of a stopped session must not change state or music
+      if (isStale()) {
+        console.log('Session stopped, analysis result ignored')
         return
       }
 
-      console.log('🎭 Mood analysis:', analysis)
+      if (!analysis) {
+        console.log('Could not analyze mood')
+        return
+      }
+
+      console.log('[loop] analysis end:', JSON.stringify(analysis))
       setMoodAnalysis(analysis)
 
-      // Phase D: Check if music should change
-      const shouldChange = shouldChangeMuaic(
-        lastMoodRef.current || currentMood,
+      // Phase D: check if music should change
+      const shouldChange = shouldChangeMusic(
+        lastMoodRef.current || latestRef.current.currentMood,
         analysis.mood,
         lastIntensityRef.current,
         analysis.intensity
       )
 
       if (shouldChange) {
-        console.log(`🎵 Mood changed: ${lastMoodRef.current} → ${analysis.mood}`)
-        await transitionToNewTrack(analysis.mood, analysis.intensity, analysis.environment)
+        await transitionToNewTrack(analysis.mood, analysis.intensity, analysis.environment, isStale)
       } else {
-        console.log('🎵 Mood stable, continuing current track')
+        console.log('[loop] mood stable, continuing current track')
       }
 
       // Update refs for next iteration
       lastMoodRef.current = analysis.mood
       lastIntensityRef.current = analysis.intensity
-
     } catch (error) {
       console.error('Agentic loop error:', error)
-      setError(`Loop error: ${error.message}`)
+      if (!isStale()) setError(`Loop error: ${error.message}`)
       setTranscribing(false)
     }
-  }, [
-    isListening,
-    whisperReady,
-    currentMood,
-    getAudioChunk,
-    setTranscribing,
-    setTranscribedText,
-    setMoodAnalysis,
-    setError,
-    transitionToNewTrack,
-  ])
+  }, [getAudioChunk, setTranscribing, setTranscribedText, setMoodAnalysis, setError, transitionToNewTrack])
 
-  /**
-   * Start the continuous loop
-   */
-  const startLoop = useCallback(() => {
-    if (loopIntervalRef.current) return
+  // The controller is created once; it always calls the latest iteration
+  iterationRef.current = runLoopIteration
+  if (!controllerRef.current) {
+    controllerRef.current = createLoopController({
+      runIteration: (context) => iterationRef.current(context),
+      getInterval: () => latestRef.current.analysisInterval,
+      firstDelay: FIRST_ITERATION_DELAY_MS,
+      onError: (error) => console.error('Agentic loop error:', error),
+    })
+  }
 
-    console.log(`🔄 Starting agentic loop (interval: ${analysisInterval}ms)`)
-    
-    // Run first iteration after a short delay to collect audio
-    firstRunTimeoutRef.current = setTimeout(() => {
-      runLoopIteration()
-    }, 5000) // Wait 5 seconds before first analysis
-
-    loopIntervalRef.current = setInterval(runLoopIteration, analysisInterval)
-  }, [runLoopIteration, analysisInterval])
-
-  /**
-   * Stop the continuous loop
-   */
-  const stopLoop = useCallback(() => {
-    if (firstRunTimeoutRef.current) {
-      clearTimeout(firstRunTimeoutRef.current)
-      firstRunTimeoutRef.current = null
-    }
-    if (loopIntervalRef.current) {
-      console.log('⏹️ Stopping agentic loop')
-      clearInterval(loopIntervalRef.current)
-      loopIntervalRef.current = null
-    }
-  }, [])
-
-  // Auto-start/stop based on listening state
+  // Start/stop through an effect with cleanup: the loop follows the actual
+  // listening state and is always stopped on unmount
   useEffect(() => {
+    const controller = controllerRef.current
     if (isListening && whisperReady) {
-      startLoop()
+      console.log(`Starting agentic loop (interval: ${latestRef.current.analysisInterval}ms)`)
+      controller.start()
     } else {
-      stopLoop()
+      controller.stop()
     }
-
-    return () => stopLoop()
-  }, [isListening, whisperReady, startLoop, stopLoop])
+    return () => controller.stop()
+  }, [isListening, whisperReady])
 
   // Play initial ambient track when first starting
   useEffect(() => {
     if (isListening && whisperReady && !isPlaying) {
-      // Start with calm tavern music
       transitionToNewTrack('calm', 5, 'tavern')
     }
   }, [isListening, whisperReady, isPlaying, transitionToNewTrack])
 
   return {
     runLoopIteration, // For manual trigger
-    startLoop,
-    stopLoop,
-    isLoopRunning: loopIntervalRef.current !== null,
+    startLoop: () => controllerRef.current.start(),
+    stopLoop: () => controllerRef.current.stop(),
+    isLoopRunning: controllerRef.current.isRunning(),
   }
 }
 

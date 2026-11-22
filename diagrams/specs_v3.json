@@ -1,0 +1,90 @@
+{
+ "fig_2_1_use_case": {
+  "w": 800,
+  "h": 900,
+  "min_font_px": 17,
+  "width_cm": 16.93,
+  "height_cm": 19.05,
+  "min_pt": 10.2
+ },
+ "fig_3_1_architecture": {
+  "w": 760,
+  "h": 1000,
+  "min_font_px": 16,
+  "width_cm": 17.09,
+  "height_cm": 22.49,
+  "min_pt": 10.2
+ },
+ "fig_3_2_modules": {
+  "w": 760,
+  "h": 902,
+  "min_font_px": 16,
+  "width_cm": 17.09,
+  "height_cm": 20.29,
+  "min_pt": 10.2
+ },
+ "fig_3_3_sequence_a": {
+  "w": 760,
+  "h": 922,
+  "min_font_px": 16,
+  "width_cm": 17.09,
+  "height_cm": 20.74,
+  "min_pt": 10.2
+ },
+ "fig_3_3_sequence_b": {
+  "w": 760,
+  "h": 760,
+  "min_font_px": 16,
+  "width_cm": 17.09,
+  "height_cm": 17.09,
+  "min_pt": 10.2
+ },
+ "fig_3_4_dfd": {
+  "w": 780,
+  "h": 700,
+  "min_font_px": 16,
+  "width_cm": 17.5,
+  "height_cm": 15.7,
+  "min_pt": 10.2
+ },
+ "fig_3_9_screens": {
+  "w": 800,
+  "h": 790,
+  "min_font_px": 17,
+  "width_cm": 16.93,
+  "height_cm": 16.72,
+  "min_pt": 10.2
+ },
+ "fig_4_1_stack": {
+  "w": 760,
+  "h": 862,
+  "min_font_px": 16,
+  "width_cm": 17.09,
+  "height_cm": 19.39,
+  "min_pt": 10.2
+ },
+ "fig_4_3_state": {
+  "w": 720,
+  "h": 800,
+  "min_font_px": 16,
+  "width_cm": 16.19,
+  "height_cm": 17.99,
+  "min_pt": 10.2
+ },
+ "fig_4_2_class_client": {
+  "w": 760,
+  "h": 800,
+  "min_font_px": 16,
+  "width_cm": 17.09,
+  "height_cm": 17.99,
+  "min_pt": 10.2
+ },
+ "fig_4_2_class_data": {
+  "w": 760,
+  "h": 578,
+  "min_font_px": 16,
+  "width_cm": 17.09,
+  "height_cm": 13.0,
+  "min_pt": 10.2
+ }
+}

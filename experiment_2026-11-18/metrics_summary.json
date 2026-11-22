@@ -1,0 +1,357 @@
+{
+ "2026-11-10 run1": {
+  "transcribe": {
+   "n": 20,
+   "min": 2.227,
+   "median": 3.249,
+   "mean": 3.2422,
+   "max": 4.764
+  },
+  "analysis": {
+   "n": 20,
+   "min": 0.362,
+   "median": 0.479,
+   "mean": 0.57065,
+   "max": 1.572
+  },
+  "processing": {
+   "n": 20,
+   "min": 2.617,
+   "median": 3.784,
+   "mean": 3.81695,
+   "max": 5.424
+  },
+  "to_change": {
+   "n": 19,
+   "min": 2.627,
+   "median": 3.848,
+   "mean": 3.858052631578947,
+   "max": 5.497
+  },
+  "reaction": {
+   "n": 19,
+   "min": 10.156000000000006,
+   "median": 11.783000000000001,
+   "mean": 11.815894736842102,
+   "max": 13.544000000000011
+  },
+  "processing_le3": 6,
+  "to_change_le3": 5,
+  "to_change_values_near_3": [
+   3.008
+  ],
+  "analysis_le1": 18,
+  "transcribe_le1_5": 0
+ },
+ "2026-11-10 run2": {
+  "transcribe": {
+   "n": 20,
+   "min": 2.197,
+   "median": 2.5385,
+   "mean": 2.6464,
+   "max": 4.791
+  },
+  "analysis": {
+   "n": 20,
+   "min": 0.342,
+   "median": 0.4285,
+   "mean": 0.45825,
+   "max": 0.798
+  },
+  "processing": {
+   "n": 20,
+   "min": 2.573,
+   "median": 2.955,
+   "mean": 3.10745,
+   "max": 5.334
+  },
+  "to_change": {
+   "n": 19,
+   "min": 2.59,
+   "median": 2.962,
+   "mean": 3.122526315789474,
+   "max": 5.478
+  },
+  "reaction": {
+   "n": 19,
+   "min": 9.867000000000019,
+   "median": 10.795999999999992,
+   "mean": 10.99257894736842,
+   "max": 13.373000000000005
+  },
+  "processing_le3": 12,
+  "to_change_le3": 11,
+  "to_change_values_near_3": [
+   2.962,
+   2.99,
+   3.001
+  ],
+  "analysis_le1": 20,
+  "transcribe_le1_5": 0
+ },
+ "2026-11-10 run3": {
+  "transcribe": {
+   "n": 20,
+   "min": 2.154,
+   "median": 2.3840000000000003,
+   "mean": 2.40485,
+   "max": 2.993
+  },
+  "analysis": {
+   "n": 20,
+   "min": 0.368,
+   "median": 0.4025,
+   "mean": 0.40985,
+   "max": 0.473
+  },
+  "processing": {
+   "n": 20,
+   "min": 2.588,
+   "median": 2.8005,
+   "mean": 2.81775,
+   "max": 3.367
+  },
+  "to_change": {
+   "n": 19,
+   "min": 2.607,
+   "median": 2.836,
+   "mean": 2.8286315789473684,
+   "max": 3.421
+  },
+  "reaction": {
+   "n": 19,
+   "min": 9.855000000000018,
+   "median": 10.735,
+   "mean": 10.701315789473682,
+   "max": 11.827999999999989
+  },
+  "processing_le3": 17,
+  "to_change_le3": 17,
+  "to_change_values_near_3": [
+   3.024
+  ],
+  "analysis_le1": 20,
+  "transcribe_le1_5": 0
+ },
+ "2026-11-10 all": {
+  "transcribe": {
+   "n": 60,
+   "min": 2.154,
+   "median": 2.4695,
+   "mean": 2.764483333333333,
+   "max": 4.791
+  },
+  "analysis": {
+   "n": 60,
+   "min": 0.342,
+   "median": 0.4285,
+   "mean": 0.47958333333333336,
+   "max": 1.572
+  },
+  "processing": {
+   "n": 60,
+   "min": 2.573,
+   "median": 2.846,
+   "mean": 3.2473833333333335,
+   "max": 5.424
+  },
+  "to_change": {
+   "n": 57,
+   "min": 2.59,
+   "median": 2.868,
+   "mean": 3.2697368421052633,
+   "max": 5.497
+  },
+  "reaction": {
+   "n": 57,
+   "min": 9.855000000000018,
+   "median": 10.963999999999999,
+   "mean": 11.169929824561402,
+   "max": 13.544000000000011
+  },
+  "processing_le3": 35,
+  "to_change_le3": 33,
+  "to_change_values_near_3": [
+   2.962,
+   2.99,
+   3.001,
+   3.008,
+   3.024
+  ],
+  "analysis_le1": 58,
+  "transcribe_le1_5": 0
+ },
+ "2026-11-18 int10": {
+  "transcribe": {
+   "n": 40,
+   "min": 2.219,
+   "median": 2.9515,
+   "mean": 3.3918,
+   "max": 6.175
+  },
+  "analysis": {
+   "n": 40,
+   "min": 0.35,
+   "median": 0.5665,
+   "mean": 0.61355,
+   "max": 1.104
+  },
+  "processing": {
+   "n": 40,
+   "min": 2.598,
+   "median": 3.5780000000000003,
+   "mean": 4.012275,
+   "max": 6.67
+  },
+  "to_change": {
+   "n": 19,
+   "min": 2.658,
+   "median": 3.839,
+   "mean": 4.150052631578947,
+   "max": 6.74
+  },
+  "reaction": {
+   "n": 19,
+   "min": -2.6869999999999976,
+   "median": -1.4620000000000175,
+   "mean": -0.7396842105263141,
+   "max": 11.145999999999958
+  },
+  "processing_le3": 8,
+  "to_change_le3": 4,
+  "to_change_values_near_3": [
+   2.981,
+   3.001
+  ],
+  "analysis_le1": 38,
+  "transcribe_le1_5": 0
+ },
+ "2026-11-18 int20": {
+  "transcribe": {
+   "n": 20,
+   "min": 3.666,
+   "median": 3.8899999999999997,
+   "mean": 3.90835,
+   "max": 4.332
+  },
+  "analysis": {
+   "n": 20,
+   "min": 0.393,
+   "median": 0.504,
+   "mean": 0.6508,
+   "max": 1.803
+  },
+  "processing": {
+   "n": 20,
+   "min": 4.072,
+   "median": 4.4165,
+   "mean": 4.5678,
+   "max": 6.138
+  },
+  "to_change": {
+   "n": 19,
+   "min": 4.092,
+   "median": 4.447,
+   "mean": 4.543526315789474,
+   "max": 6.167
+  },
+  "reaction": {
+   "n": 19,
+   "min": 11.415999999999997,
+   "median": 12.28400000000002,
+   "mean": 12.401631578947372,
+   "max": 14.283000000000015
+  },
+  "processing_le3": 0,
+  "to_change_le3": 0,
+  "to_change_values_near_3": [],
+  "analysis_le1": 18,
+  "transcribe_le1_5": 0
+ },
+ "2026-11-18 int30": {
+  "transcribe": {
+   "n": 20,
+   "min": 2.537,
+   "median": 3.0789999999999997,
+   "mean": 3.3218,
+   "max": 5.401
+  },
+  "analysis": {
+   "n": 20,
+   "min": 0.354,
+   "median": 0.47550000000000003,
+   "mean": 0.5455,
+   "max": 1.053
+  },
+  "processing": {
+   "n": 20,
+   "min": 2.896,
+   "median": 3.588,
+   "mean": 3.8728,
+   "max": 6.466
+  },
+  "to_change": {
+   "n": 19,
+   "min": 2.95,
+   "median": 3.574,
+   "mean": 3.894421052631579,
+   "max": 6.482
+  },
+  "reaction": {
+   "n": 19,
+   "min": 12.423000000000002,
+   "median": 13.120000000000005,
+   "mean": 13.469368421052627,
+   "max": 15.981999999999971
+  },
+  "processing_le3": 1,
+  "to_change_le3": 1,
+  "to_change_values_near_3": [
+   2.95
+  ],
+  "analysis_le1": 19,
+  "transcribe_le1_5": 0
+ },
+ "2026-11-18 int60": {
+  "transcribe": {
+   "n": 20,
+   "min": 6.597,
+   "median": 6.8445,
+   "mean": 6.86745,
+   "max": 7.205
+  },
+  "analysis": {
+   "n": 20,
+   "min": 0.336,
+   "median": 0.493,
+   "mean": 0.5353,
+   "max": 1.154
+  },
+  "processing": {
+   "n": 20,
+   "min": 7.049,
+   "median": 7.3309999999999995,
+   "mean": 7.4099,
+   "max": 8.366
+  },
+  "to_change": {
+   "n": 19,
+   "min": 7.093,
+   "median": 7.341,
+   "mean": 7.377578947368421,
+   "max": 7.81
+  },
+  "reaction": {
+   "n": 19,
+   "min": 31.416000000000054,
+   "median": 31.875,
+   "mean": 31.93342105263158,
+   "max": 32.85400000000001
+  },
+  "processing_le3": 0,
+  "to_change_le3": 0,
+  "to_change_values_near_3": [],
+  "analysis_le1": 19,
+  "transcribe_le1_5": 0
+ }
+}

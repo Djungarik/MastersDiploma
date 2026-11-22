@@ -10,8 +10,31 @@ let mediaRecorder = null
 let audioContext = null
 let analyser = null
 let stream = null
-let chunks = []
 let animationFrameId = null
+
+/**
+ * Create a MediaRecorder that keeps its own list of recorded chunks
+ */
+function createRecorder(mediaStream) {
+  const mimeType = MediaRecorder.isTypeSupported('audio/webm;codecs=opus')
+    ? 'audio/webm;codecs=opus'
+    : 'audio/webm'
+
+  const recorder = new MediaRecorder(mediaStream, { mimeType })
+  recorder.recordedChunks = []
+
+  recorder.ondataavailable = (event) => {
+    if (event.data.size > 0) {
+      recorder.recordedChunks.push(event.data)
+    }
+  }
+
+  recorder.onerror = (event) => {
+    console.error('MediaRecorder error:', event.error)
+  }
+
+  return recorder
+}
 
 /**
  * Hook for capturing audio from the user's microphone
@@ -77,23 +100,7 @@ export function useAudioCapture() {
       source.connect(analyser)
 
       // Set up media recorder
-      const mimeType = MediaRecorder.isTypeSupported('audio/webm;codecs=opus')
-        ? 'audio/webm;codecs=opus'
-        : 'audio/webm'
-
-      mediaRecorder = new MediaRecorder(stream, { mimeType })
-      chunks = []
-
-      mediaRecorder.ondataavailable = (event) => {
-        if (event.data.size > 0) {
-          chunks.push(event.data)
-          console.log(`🎤 Chunk received: ${event.data.size} bytes (total chunks: ${chunks.length})`)
-        }
-      }
-
-      mediaRecorder.onerror = (event) => {
-        console.error('MediaRecorder error:', event.error)
-      }
+      mediaRecorder = createRecorder(stream)
 
       setListening(true)
       mediaRecorder.start(1000) // Collect data every second
@@ -114,13 +121,14 @@ export function useAudioCapture() {
         return
       }
 
-      mediaRecorder.onstop = () => {
-        const blob = new Blob(chunks, { type: 'audio/webm' })
-        chunks = []
+      const recorder = mediaRecorder
+      recorder.onstop = () => {
+        const blob = new Blob(recorder.recordedChunks, { type: 'audio/webm' })
+        recorder.recordedChunks = []
         resolve(blob)
       }
 
-      mediaRecorder.stop()
+      recorder.stop()
       setListening(false)
       setAudioLevel(0)
 
@@ -145,33 +153,38 @@ export function useAudioCapture() {
     })
   }, [setListening, setAudioLevel])
 
-  // Get current audio as blob without stopping
+  // Get the audio recorded since the previous call as a standalone file.
+  //
+  // Only the first blob produced by a MediaRecorder contains the WebM header,
+  // so slicing one long recording gives fragments that cannot be decoded.
+  // The current recorder is therefore stopped (its blob is a complete WebM
+  // file) and a new one is started on the same stream right away.
   const getAudioChunk = useCallback(() => {
     return new Promise((resolve) => {
-      if (!mediaRecorder || mediaRecorder.state !== 'recording') {
-        console.log('⚠️ MediaRecorder not recording, state:', mediaRecorder?.state)
+      if (!mediaRecorder || mediaRecorder.state !== 'recording' || !stream) {
+        console.log('MediaRecorder not recording, state:', mediaRecorder?.state)
         resolve(null)
         return
       }
 
-      // Request any pending data
-      mediaRecorder.requestData()
-
-      // Wait to ensure data is collected
-      setTimeout(() => {
-        const chunkCount = chunks.length
-        console.log(`📊 Audio chunks available: ${chunkCount}`)
-        
-        if (chunkCount > 0) {
-          const blob = new Blob(chunks, { type: 'audio/webm' })
-          console.log(`📊 Audio blob size: ${blob.size} bytes`)
-          chunks = [] // Clear for next chunk
+      const finished = mediaRecorder
+      finished.onstop = () => {
+        const parts = finished.recordedChunks
+        finished.recordedChunks = []
+        if (parts.length > 0) {
+          const blob = new Blob(parts, { type: 'audio/webm' })
+          console.log(`Audio blob size: ${blob.size} bytes`)
           resolve(blob)
         } else {
-          console.log('⚠️ No chunks available yet')
+          console.log('No audio data available yet')
           resolve(null)
         }
-      }, 500)
+      }
+
+      // Start the next recorder first so that no speech is lost in between
+      mediaRecorder = createRecorder(stream)
+      mediaRecorder.start(1000)
+      finished.stop()
     })
   }, [])
 

@@ -1,0 +1,22 @@
+[
+ {"id": 1, "expected": "calm", "text": "You sit by the warm fireplace in the tavern. The innkeeper brings fresh bread and ale, and the bard plays a gentle song while you rest after the long road."},
+ {"id": 2, "expected": "mystery", "text": "On the old stone wall you notice strange glowing runes. They form a puzzle, and a hidden mechanism clicks softly when you touch the ancient symbols."},
+ {"id": 3, "expected": "tense", "text": "You sneak past the sleeping guards, holding your breath. One wrong step on the creaking floor and the whole camp will wake up. Be very careful."},
+ {"id": 4, "expected": "epic", "text": "Suddenly two giant gargoyles drop from the ceiling and attack! Draw your swords and roll for initiative, the battle begins!"},
+ {"id": 5, "expected": "spooky", "text": "A cold whisper echoes through the abandoned crypt. The dead begin to rise from their graves, and a ghostly figure stares at you with empty eyes."},
+ {"id": 6, "expected": "calm", "text": "The morning sun rises over the quiet village. Birds are singing, merchants open their shops, and you walk peacefully through the market buying supplies."},
+ {"id": 7, "expected": "epic", "text": "The dragon spreads its wings and breathes fire across the battlefield! The heroes charge forward with a mighty war cry to strike the final blow!"},
+ {"id": 8, "expected": "mystery", "text": "The wizard's library is full of secrets. You investigate a locked book that hums with magic, and discover a clue hidden between the pages."},
+ {"id": 9, "expected": "spooky", "text": "The haunted mansion is silent. Blood drips from the ceiling, a cursed doll turns its head toward you, and something undead crawls in the darkness."},
+ {"id": 10, "expected": "tense", "text": "The negotiation is going wrong. The bandit leader slowly reaches for his dagger while his men surround you. Nobody moves, everyone is waiting."},
+ {"id": 11, "expected": "calm", "text": "You set up camp near a quiet river. The stars are bright, the fire crackles softly, and the party shares stories before going to sleep."},
+ {"id": 12, "expected": "epic", "text": "The orc warlord roars and his army charges the castle gates! Arrows fill the sky as you fight shoulder to shoulder on the walls in a heroic last stand!"},
+ {"id": 13, "expected": "mystery", "text": "In the centre of the chamber floats a crystal sphere showing visions of unknown places. Strange symbols rotate around it, and you try to understand the riddle."},
+ {"id": 14, "expected": "tense", "text": "You are being chased through the narrow streets. The city guards are right behind you, and the alley ahead may be a dead end. Run, hurry!"},
+ {"id": 15, "expected": "spooky", "text": "Deep in the swamp a necromancer performs a dark ritual. Skeleton hands reach out of the mud, and a terrible scream of lost souls fills the fog."},
+ {"id": 16, "expected": "calm", "text": "The elven healer welcomes you into the garden. You drink herbal tea, your wounds are treated, and for the first time in days you feel safe and relaxed."},
+ {"id": 17, "expected": "epic", "text": "The demon lord rises from the flames for the final boss fight! Lightning strikes around you as the paladin raises the holy sword for a glorious attack!"},
+ {"id": 18, "expected": "mystery", "text": "The merchant gives you a map with a missing piece. Who erased the name of the island, and why does the compass point to a place that does not exist?"},
+ {"id": 19, "expected": "tense", "text": "The rope bridge sways above the abyss. A plank cracks under your foot, and you hear something moving in the dark below. Slowly, do not look down."},
+ {"id": 20, "expected": "spooky", "text": "The old graveyard is covered in mist. A coffin lid slowly opens by itself, and the ghost of a drowned bride whispers your name from the shadows."}
+]

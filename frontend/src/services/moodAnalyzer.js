@@ -126,7 +126,7 @@ function normalizeEnvironment(environment) {
  * @param {number} newIntensity 
  * @returns {boolean}
  */
-export function shouldChangeMuaic(currentMood, newMood, currentIntensity, newIntensity) {
+export function shouldChangeMusic(currentMood, newMood, currentIntensity, newIntensity) {
   // Always change if mood is different
   if (currentMood !== newMood) return true
   
